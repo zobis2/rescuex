@@ -341,7 +341,7 @@ async function startDockerStacks(hashes) {
     copyFrontendFiles(
       nginxContainerName,
       adminSourcePath,
-      "/usr/share/nginx/admin",
+      "/usr/share/nginx/frontend",
     );
     // copyFrontendFiles(
     //   nginxContainerName,
