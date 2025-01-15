@@ -352,11 +352,9 @@ async function startDockerStacks(hashes) {
 
   await checkContainerIsUp("postgres"); /// postgres is up.
   runCommand(
-    `cd ${path.join(baseDir, "control_app_web")} && docker-compose down && BACKEND_TAG=${hashes.backend} BACKEND_FLASK_TAG=${hashes.backend_flask} docker-compose up -d`,
+    `cd ${path.join(baseDir, "")} && docker-compose down && BACKEND_TAG=${hashes.backend} docker-compose up -d`,
   );
-  runCommand(
-    `cd ${path.join(baseDir, "atom_platform")} && docker-compose down && PLATFORM_BACKEND_TAG=${hashes.platform_backend} docker-compose up -d`,
-  );
+
   await copyBuildsOfFrontEndAndWaitForNginx();
 }
 
