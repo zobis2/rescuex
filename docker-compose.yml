@@ -69,7 +69,7 @@ services:
 
   nginx:
       build:
-        context: nginx
+        context: server/nginx
       container_name: nginx
       restart: always
       tty: true
