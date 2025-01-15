@@ -1,0 +1,42 @@
+{
+  "id": {
+    "label": "מזהה",
+    "key": "id"
+  },
+  "street": {
+    "label": "רחוב",
+    "key": "street"
+  },
+  "number": {
+    "label": "מספר",
+    "key": "number"
+  },
+  "city": {
+    "label": "עיר",
+    "key": "city"
+  },
+  "serialId": {
+    "label": "מספר סידורי",
+    "key": "serialId"
+  },
+  "gosh": {
+    "label": "גוש",
+    "key": "gosh"
+  },
+  "halka": {
+    "label": "חלקה",
+    "key": "halka"
+  },
+  "cords": {
+    "label": "קורדינטות",
+    "key": "cords"
+  },
+  "rainflow1to5": {
+    "label": "זרימת מים 1-5",
+    "key": "rainflow1to5"
+  },
+  "rainflow1to50": {
+    "label": "זרימת מים 1-50",
+    "key": "rainflow1to50"
+  }
+}
