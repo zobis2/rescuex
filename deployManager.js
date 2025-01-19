@@ -357,7 +357,23 @@ async function startDockerStacks(hashes) {
 
   await copyBuildsOfFrontEndAndWaitForNginx();
 }
+// Function to stop all running Docker containers
+function stopAllRunningContainers() {
+  try {
+    console.log("Stopping all running Docker containers...");
+    const runningContainers = execSync("docker ps -q").toString().trim();
 
+    if (runningContainers) {
+      // Stop all running containers
+      execSync(`docker stop ${runningContainers}`, { stdio: "inherit" });
+      console.log("All running Docker containers have been stopped.");
+    } else {
+      console.log("No running Docker containers to stop.");
+    }
+  } catch (error) {
+    console.error("Error while stopping running Docker containers:", error.message);
+  }
+}
 // Main Process
 (async () => {
 
@@ -369,7 +385,7 @@ async function startDockerStacks(hashes) {
   fs.writeFileSync(latestCommitFile, commitId);
   console.log(`Latest commit ID saved: ${commitId}`);
   // cleanDockerContainers()
-
+  stopAllRunningContainers()
   const hashes = await calculateHashes();
   // Clean and build frontend
   cleanOldBuilds(outputsDir, "frontend", hashes.frontend);
