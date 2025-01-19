@@ -27,13 +27,41 @@ const SecurityCaseWizard = () => {
         }));
     };
 
-    const handleAddCustomMap = () => {
+    const handleAddCustomMap = async () => {
         const mapName = prompt("הזן שם למפה החדשה:");
-        if (mapName) {
-            setMaps((prev) => [...prev, { name: mapName, image: null }]);
-        }
+        if (!mapName) return;
+
+        // Open a file picker for the image
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/jpeg,image/png,image/gif";
+
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    // Add the map with the image to the list
+                    setMaps((prev) => [
+                        ...prev,
+                        { name: mapName, image: reader.result },
+                    ]);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // Add the map without an image
+                setMaps((prev) => [...prev, { name: mapName, image: null }]);
+            }
+        };
+
+        // Trigger the file input
+        fileInput.click();
     };
 
+    const shaareZedekCoordinates = { lat: 31.773199, lng: 35.185261 };
+    const handleStepClick = (index) => {
+        setCurrentStep(index);
+    };
     const steps = [
         {
             title: "דרכי גישה",
@@ -59,6 +87,7 @@ const SecurityCaseWizard = () => {
             title: "כניסות ויציאות",
             content: (
                 <LocationEditorWithMap
+                    center={shaareZedekCoordinates}
                     title="כניסות ויציאות"
                     initialData={stepData[2]}
                     onSave={handleSave}
@@ -89,10 +118,15 @@ const SecurityCaseWizard = () => {
             title: "מפות המתחם",
             content: (
                 <>
+                    <div  className="  has-text-centered">
+
+
+
                     <MapsUploader maps={maps} onSave={setMaps} />
-                    <button onClick={handleAddCustomMap} className="button is-primary">
+                    <button onClick={handleAddCustomMap} className="button  is-primary">
                         הוסף מפה חדשה
                     </button>
+                    </div>
                 </>
             ),
         },
@@ -103,14 +137,21 @@ const SecurityCaseWizard = () => {
     const isLastStep = currentStep === steps.length - 1;
 
     return (
+        <div className="container is-max-desktop">
+
         <div className="security-case-wizard" style={{ direction: "rtl" }}>
-            <h1 className="title">ניהול תיק אבטחה</h1>
+            <h1 className="has-text-centered title">ניהול תיק אבטחה</h1>
 
             {/* Step Indicator */}
-            <nav className="steps is-centered">
+            <div className="has-text-centered">
+
+            <nav className="steps">
                 <ul>
                     {steps.map((step, index) => (
                         <li
+                            onClick={() => handleStepClick(index)}
+                            style={{ cursor: "pointer" }}
+
                             key={index}
                             className={`steps-segment ${
                                 currentStep === index ? "is-active" : ""
@@ -132,7 +173,7 @@ const SecurityCaseWizard = () => {
                     ))}
                 </ul>
             </nav>
-
+            </div>
             {/* Step Content */}
             <div className="box">
                 <h2 className="subtitle">{steps[currentStep].title}</h2>
@@ -140,7 +181,7 @@ const SecurityCaseWizard = () => {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="buttons">
+            <div className="buttons is-centered">
                 <button
                     className="button is-link"
                     onClick={handlePrevious}
@@ -191,6 +232,7 @@ const SecurityCaseWizard = () => {
                     </div>
                 </div>
             )}
+        </div>
         </div>
     );
 };

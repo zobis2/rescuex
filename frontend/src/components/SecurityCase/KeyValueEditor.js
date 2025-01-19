@@ -26,30 +26,36 @@ const KeyValueEditor = ({ title, initialData = [], onSave }) => {
     };
 
     return (
-        <div className="key-value-editor" style={{ direction: "rtl" }}>
-            <h2>{title}</h2>
-            <div>
-                <input
-                    type="text"
-                    placeholder="מפתח"
-                    value={keyInput}
-                    onChange={(e) => setKeyInput(e.target.value)}
-                    className="input"
-                />
-                <input
-                    type="text"
-                    placeholder="ערך"
-                    value={valueInput}
-                    onChange={(e) => setValueInput(e.target.value)}
-                    className="input"
-                />
-                <button onClick={handleAddEntry} className="button is-primary">
-                    הוסף
-                </button>
+        <div className="key-value-editor has-text-centered" style={{ direction: "rtl" }}>
+            <h2 className="title">{title}</h2>
+            <div className="field is-grouped is-justify-content-center">
+                <div className="control">
+                    <input
+                        type="text"
+                        placeholder="מפתח"
+                        value={keyInput}
+                        onChange={(e) => setKeyInput(e.target.value)}
+                        className="input"
+                    />
+                </div>
+                <div className="control">
+                    <input
+                        type="text"
+                        placeholder="ערך"
+                        value={valueInput}
+                        onChange={(e) => setValueInput(e.target.value)}
+                        className="input"
+                    />
+                </div>
+                <div className="control">
+                    <button onClick={handleAddEntry} className="button is-primary">
+                        הוסף
+                    </button>
+                </div>
             </div>
-            <ul>
+            <ul className="is-flex is-flex-direction-column is-align-items-center">
                 {entries.map((entry, index) => (
-                    <li key={index}>
+                    <li key={index} className="box" style={{ maxWidth: "400px", marginBottom: "10px" }}>
                         <strong>{entry.key}:</strong> {entry.value}{" "}
                         <button
                             onClick={() => handleDeleteEntry(index)}

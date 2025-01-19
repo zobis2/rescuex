@@ -19,11 +19,11 @@ const MapsUploader = ({ maps, onSave }) => {
     };
 
     return (
-        <div className="maps-uploader" style={{ direction: "rtl" }}>
-            <h2>מפות המתחם</h2>
+        <div className="maps-uploader has-text-centered" style={{ direction: "rtl" }}>
+            <h2 className="has-text-centered">מפות המתחם</h2>
             {uploadedMaps.map((map, index) => (
                 <div key={index}>
-                    <h3>{map.name}</h3>
+                    <h3 className="maps-uploader has-text-centered">{map.name}</h3>
                     <input
                         type="file"
                         accept="image/jpeg,image/png,image/gif"
@@ -31,7 +31,9 @@ const MapsUploader = ({ maps, onSave }) => {
                     />
                     {map.image && (
                         <div>
-                            <img src={map.image} alt={`מפת ${map.name}`} style={{ width: "100%", marginTop: "10px" }} />
+                            <img src={map.image} alt={`מפת ${map.name}`}
+                                 style={{ width: "80%", maxWidth: "300px", margin: "10px auto" }}
+                            />
                         </div>
                     )}
                 </div>

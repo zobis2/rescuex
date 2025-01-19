@@ -6,9 +6,10 @@ const containerStyle = {
     height: "400px",
 };
 
-const defaultCenter = { lat: 32.0853, lng: 34.7818 };
 
-const LocationEditorWithMap = ({ title, initialData = [], onSave }) => {
+const LocationEditorWithMap = ({ center,title, initialData = [], onSave }) => {
+    const defaultCenter=center;
+
     const [locations, setLocations] = useState(initialData);
     const [currentLocation, setCurrentLocation] = useState({
         name: "",
@@ -47,9 +48,11 @@ const LocationEditorWithMap = ({ title, initialData = [], onSave }) => {
     };
 
     return (
-        <div className="location-editor" style={{ direction: "rtl" }}>
+        <div className="location-editor has-text-centered" style={{ direction: "rtl" }}>
             <h2>{title}</h2>
             <div>
+                <div className="field">
+                    <div className="control">
                 <input
                     type="text"
                     placeholder="שם המקום"
@@ -59,6 +62,8 @@ const LocationEditorWithMap = ({ title, initialData = [], onSave }) => {
                     }
                     className="input"
                 />
+                    </div>
+                </div>
                 <textarea
                     placeholder="תיאור המקום"
                     value={currentLocation.description}
@@ -78,7 +83,7 @@ const LocationEditorWithMap = ({ title, initialData = [], onSave }) => {
                     <GoogleMap
                         mapContainerStyle={containerStyle}
                         center={defaultCenter}
-                        zoom={12}
+                        zoom={17}
                         onClick={handleMapClick}
                     >
                         {/* Existing Markers */}
