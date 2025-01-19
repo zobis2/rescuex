@@ -24,7 +24,7 @@ function App() {
     debugger;
     const LoggedAlready=    localStorage.getItem('loggedIn')?.toString()==='true';
 
-    const [isLoggedIn, setIsLoggedIn] = useState(LoggedAlready);
+    const [isLoggedIn, setIsLoggedIn] = useState(true);
 
     const handleLogin = () => {
         setIsLoggedIn(true);
