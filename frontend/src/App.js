@@ -7,7 +7,7 @@ import PlaceHolderReplace from './components/TemplateForm/TemplateForm';
 // import DownloadFilesPage from './components/DownloadFilesPage';
 // import ProjectImagePage from './components/ProjectImagePage';
 import Navigation from './components/Navigation';
-import ProjectManager from "./components/Project/ProjectManager";
+import ProjectManager from "./components/SecurityCase/SecurityCaseWizard";
 // import OrthoPhotoMain from "./components/OrthoPhoto/OrthoPhotoMain";
 // import CalcQuantities from "./components/CalcQuantities";
 // import CompareRebar from "./components/CompareRebar";

@@ -22,17 +22,17 @@ const Navigation = () => {
                 <button className="button is-link" onClick={() => navigate(-1)}>
                     חזור אחורה
                 </button>
-                <button
-                    className={`button ${selectedTab === '/place-holder-replace' ? 'is-active' : ''}`}
-                    onClick={() => handleNavigation('/place-holder-replace')}
-                >
-                    הפקת דוח נגר
-                </button>
+                {/*<button*/}
+                {/*    className={`button ${selectedTab === '/place-holder-replace' ? 'is-active' : ''}`}*/}
+                {/*    onClick={() => handleNavigation('/place-holder-replace')}*/}
+                {/*>*/}
+                {/*    הפקת דוח נגר*/}
+                {/*</button>*/}
                 <button
                     className={`button ${selectedTab === '/project-manager' ? 'is-active' : ''}`}
                     onClick={() => handleNavigation('/project-manager')}
                 >
-                    ניהול פרויקטים
+                   הוספת תיק אבטחה
                 </button>
             </div>
         </div>
