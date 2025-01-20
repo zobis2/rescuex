@@ -6,6 +6,7 @@ const LocationPicker = ({ onLocationSelect }) => {
     const [map, setMap] = useState(null);
     const [markerPosition, setMarkerPosition] = useState(null);
     const [searchBox, setSearchBox] = useState(null);
+    const [center, setCenter] = useState({ lat: 31.7683, lng: 35.2137 }); // Default center
 
     const containerStyle = {
         width: "100%",
@@ -13,18 +14,19 @@ const LocationPicker = ({ onLocationSelect }) => {
         margin: "10px 0",
     };
 
-    const center = {
-        lat: 31.7683,
-        lng: 35.2137,
-    };
+
 
     const handlePlaceChanged = () => {
         const place = searchBox.getPlace();
+        debugger;
         if (place && place.geometry) {
             const { lat, lng } = place.geometry.location;
             const position = { lat: lat(), lng: lng() };
             setMarkerPosition(position);
             map.panTo(position);
+            setCenter(position); // Update center state
+
+            map.setZoom(15); // Add this line
             onLocationSelect(place.formatted_address);
         }
     };
