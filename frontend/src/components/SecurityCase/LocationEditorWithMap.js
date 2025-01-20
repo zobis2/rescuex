@@ -84,6 +84,8 @@ const LocationEditorWithMap = ({ center,title, initialData = [], onSave }) => {
                         mapContainerStyle={containerStyle}
                         center={defaultCenter}
                         zoom={17}
+                        mapTypeId="roadmap" // Add this line
+
                         onClick={handleMapClick}
                     >
                         {/* Existing Markers */}

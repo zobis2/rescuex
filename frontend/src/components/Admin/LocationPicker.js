@@ -59,6 +59,8 @@ const LocationPicker = ({ onLocationSelect }) => {
                 <GoogleMap
                     mapContainerStyle={containerStyle}
                     center={center}
+                    mapTypeId="roadmap" // Add this line
+
                     zoom={10}
                     onLoad={(mapInstance) => setMap(mapInstance)}
                     onClick={(e) => {
