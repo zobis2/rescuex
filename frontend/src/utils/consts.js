@@ -46,3 +46,4 @@ export const HIERARCHY_LABELS = {
 export const S3_BUCKET_NAME = 'atom-construction-bucket-eu'
 // export const S3_BUCKET_ORTHOPHOTO = 'prod-drone-yard-droneyard-dronephotosbucket1549df6-1xcxnmmtvojj'
 export const S3_BUCKET_ORTHOPHOTO = 'ec2-orthophoto-raw'
+export const REACT_APP_GOOGLE_MAPS_API_KEY='AIzaSyC-gKVpy7xzHT74mYyIPXdBZid8londLLU'

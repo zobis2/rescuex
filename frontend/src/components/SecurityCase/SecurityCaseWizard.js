@@ -69,6 +69,8 @@ const SecurityCaseWizard = () => {
                 <KeyValueEditor
                     title="דרכי גישה"
                     initialData={stepData[0]}
+                    predefinedKeys={["מערבי", "מזרחי", "צפוני", "דרומי"]}
+
                     onSave={handleSave}
                 />
             ),
@@ -78,6 +80,8 @@ const SecurityCaseWizard = () => {
             content: (
                 <KeyValueEditor
                     title="נהלי חירום"
+                    predefinedKeys={["שריפה", "פחע", "ארן"]}
+
                     initialData={stepData[1]}
                     onSave={handleSave}
                 />
@@ -98,6 +102,8 @@ const SecurityCaseWizard = () => {
             title: "כניסות לחניונים",
             content: (
                 <KeyValueEditor
+                    predefinedKeys={["עליון", "תחתון"]}
+
                     title="כניסות לחניונים"
                     initialData={stepData[3]}
                     onSave={handleSave}
@@ -124,7 +130,7 @@ const SecurityCaseWizard = () => {
 
                     <MapsUploader maps={maps} onSave={setMaps} />
                     <button onClick={handleAddCustomMap} className="button  is-primary">
-                        הוסף מפה חדשה
+                        העלאת מפה חדשה
                     </button>
                     </div>
                 </>

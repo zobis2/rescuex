@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import {REACT_APP_GOOGLE_MAPS_API_KEY} from "../../utils/consts";
 
 const containerStyle = {
     width: "100%",
@@ -17,8 +18,7 @@ const LocationEditorWithMap = ({ center,title, initialData = [], onSave }) => {
         lat: null,
         lng: null,
     });
-    const googleMapsApiKey='AIzaSyC-gKVpy7xzHT74mYyIPXdBZid8londLLU'
-
+    const googleMapsApiKey=REACT_APP_GOOGLE_MAPS_API_KEY;
     const { isLoaded } = useJsApiLoader({
         id: "google-map-script",
         googleMapsApiKey // Replace with your API key
