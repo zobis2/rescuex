@@ -40,6 +40,12 @@ const Navigation = () => {
                 >
                     הוספת יוזר למערכת
                 </button>
+                <button
+                    className={`button ${selectedTab === '/canvas' ? 'is-active' : ''}`}
+                    onClick={() => handleNavigation('/canvas')}
+                >
+                    ערוך קנבס
+                </button>
             </div>
         </div>
     );

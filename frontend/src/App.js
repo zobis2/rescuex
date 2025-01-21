@@ -20,6 +20,7 @@ import SecurityCaseWizard from "./components/SecurityCase/SecurityCaseWizard";
 import { SnackbarProvider } from 'notistack';
 import 'bulma/css/bulma.css';
 import AddUserForm from "./components/Admin/AddUserForm";
+import FabricCanvas from "./components/Canvas/FabricCanvas";
 
 function App() {
     debugger;
@@ -47,6 +48,8 @@ function App() {
                             <Route path="/place-holder-replace" element={<PlaceHolderReplace />} />
                             <Route path="/security-case-wizard" element={<SecurityCaseWizard />} />
                             <Route path="/add-user-form" element={<AddUserForm />} />
+                            <Route path="/canvas" element={<FabricCanvas />} />
+
 
                             {/*<Route path="/upload-orthophoto-files" element={<OrthoPhotoMain />} />*/}
                             {/*<Route path="/upload-ap-files" element={<UploadAPFilesPage />} />*/}
