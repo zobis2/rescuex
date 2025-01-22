@@ -20,6 +20,7 @@ app.use((req, res, next) => {
 const placeHolderRoutes = require('./routes/placeHolders');
 const authRoutes = require('./routes/auth');
 const projectsRoutes = require('./routes/projects');
+const userRoutes = require('./routes/user');
 
 // const downloadRoutes = require('./routes/download');
 // const calcQuantitiesRoute = require('./routes/calcQuantities');
@@ -36,13 +37,14 @@ const projectsRoutes = require('./routes/projects');
 app.use('/api/auth/', authRoutes);
 app.use('/api/placeHolder/', placeHolderRoutes);
 app.use('/api/projects/', projectsRoutes);
+app.use('/api/users/', userRoutes);
 
 // app.use('/api/download', downloadRoutes);
 // app.use('/api/upload', uploadRoutes);
 // app.use('/api/awsLogs', awsLogsRoute);
 // app.use('/api/rtsp', rtspRoutes);
 
-const PORT = process.env.PORT || 5002;
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

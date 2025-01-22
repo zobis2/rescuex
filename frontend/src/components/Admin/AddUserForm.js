@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LocationPicker from "./LocationPicker";
+import {useNavigate} from "react-router-dom";
 
 const AddUserForm = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -19,13 +22,14 @@ const AddUserForm = () => {
   };
 
   const handleLocationChange = (location) => {
+    debugger;
     setFormData({
       ...formData,
       location,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, password, email, location } = formData;
 
@@ -47,13 +51,32 @@ const AddUserForm = () => {
       return;
     }
 
-    // Simulate API Call
-    toast.success("יוזר נוסף בהצלחה!");
-    console.log("Submitted Data:", formData);
+    try {
+      const response = await fetch("http://localhost:3001/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    // Reset form
-    setFormData({ username: "", password: "", email: "", location: "" });
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      toast.success("יוזר נוסף בהצלחה - חוזר לעמוד ראשי");
+      // setFormData({ username: "", password: "", email: "", location: "" });
+
+      setTimeout(  ()=>{
+        navigate("/")
+      } ,4000)
+
+    } catch (error) {
+      console.error("Error adding user:", error);
+      toast.error(error.message || "שגיאה בהוספת היוזר");
+    }
   };
+
 
   return (
       <div style={{ direction: "rtl", textAlign: "center" }}>

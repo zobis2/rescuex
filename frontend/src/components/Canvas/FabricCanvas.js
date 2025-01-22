@@ -43,17 +43,38 @@ const FabricCanvasWithIcons = () => {
         }
     };
 
-    const handleIconClick = (icon) => {
-        // Load the selected SVG icon onto the canvas
-        fabric.loadSVGFromString(icon.svg, (objects, options) => {
-            const svgIcon = fabric.util.groupSVGElements(objects, options);
-            svgIcon.scale(0.2); // Adjust scale
-            svgIcon.set({ left: 100, top: 100, selectable: true });
-            canvas.add(svgIcon);
-            canvas.setActiveObject(svgIcon);
-            canvas.renderAll();
-            setCurrentIcon(svgIcon); // Set current icon for copying
-        });
+    const handleIconClick = async (icon) => {
+        try {
+            fabric.Image.fromURL(icon.path, (img) => {
+                img.scale(0.05); // Adjust the scale if needed
+                img.set({
+                    left: 100,
+                    top: 100,
+                    selectable: true,
+                });
+                canvas.add(img);
+                canvas.renderAll();
+            });
+            // const response = await fetch(icon.path);
+            // const contentType = response.headers.get('Content-Type');
+            // debugger;
+            // // if (!contentType.includes('image/svg+xml')) {
+            // //     throw new Error('Invalid SVG file or incorrect Content-Type.');
+            // // }
+            //
+            // const svgContent = await response.text();
+            // fabric.loadSVGFromString(svgContent, (objects, options) => {
+            //     const svgIcon = fabric.util.groupSVGElements(objects, options);
+            //     svgIcon.scale(0.2); // Adjust scale
+            //     svgIcon.set({ left: 100, top: 100, selectable: true });
+            //     canvas.add(svgIcon);
+            //     canvas.setActiveObject(svgIcon);
+            //     canvas.renderAll();
+            // });
+        } catch (error) {
+            console.error('Error loading SVG:', error);
+            alert('Failed to load SVG. Please check the file path or content.');
+        }
     };
     const saveCanvasAsImage = () => {
         const dataURL = canvas.toDataURL({
@@ -69,33 +90,46 @@ const FabricCanvasWithIcons = () => {
     };
 
 
+    const zoomIn = () => {
+        const zoom = canvas.getZoom();
+        canvas.setZoom(zoom * 1.1); // Increase zoom by 10%
+        canvas.requestRenderAll();
+    };
 
+    const zoomOut = () => {
+        const zoom = canvas.getZoom();
+        canvas.setZoom(zoom / 1.1); // Decrease zoom by 10%
+        canvas.requestRenderAll();
+    };
     return (
         <div>
             {/* Image upload */}
-            <div style={{ marginBottom: "10px" }}>
-                <input type="file" accept="image/*" onChange={handleImageUpload} />
+            <div style={{marginBottom: "10px"}}>
+                <input type="file" accept="image/*" onChange={handleImageUpload}/>
             </div>
 
             {/* Icon selection */}
-            <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+            <div style={{display: "flex", gap: "10px", marginBottom: "10px"}}>
                 {icons.map((icon) => (
                     <button key={icon.name} onClick={() => handleIconClick(icon)}>
                         <img
-                            src={`data:image/svg+xml;utf8,${encodeURIComponent(icon.svg)}`}
-                            alt={icon.label}
-                            style={{ width: 30, height: 30 }}
+                            // src={`data:image/svg+xml;utf8,${encodeURIComponent(icon.path)}`
+                                src={icon.path}
+
+                                alt={icon.label}
+                            style={{width: 30, height: 30}}
                         />
-                        <br />
+                        <br/>
                         {icon.label}
                     </button>
                 ))}
             </div>
 
             {/* Canvas */}
-            <canvas id="canvas" ref={canvasRef} style={{ border: "1px solid black" }}></canvas>
+            <canvas id="canvas" ref={canvasRef} style={{border: "1px solid black"}}></canvas>
             <button className="button is-link" onClick={saveCanvasAsImage}>שמור תמונה</button>
-            {/* Copy-Paste Buttons */}
+            <button className="button is-link" onClick={zoomIn}>זום אין</button>
+            <button className="button is-link" onClick={zoomOut}>זום אאוט</button>
 
         </div>
     );

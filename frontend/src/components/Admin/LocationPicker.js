@@ -27,7 +27,7 @@ const LocationPicker = ({ onLocationSelect }) => {
             setCenter(position); // Update center state
 
             map.setZoom(15); // Add this line
-            onLocationSelect(place.formatted_address);
+            onLocationSelect( place.geometry.location);
         }
     };
 
