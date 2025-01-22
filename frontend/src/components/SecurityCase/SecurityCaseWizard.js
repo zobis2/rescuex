@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import KeyValueEditor from "./KeyValueEditor";
 import LocationEditorWithMap from "./LocationEditorWithMap";
 import ContactEditor from "./ContactEditor";
 import MapsUploader from "./MapsUploader";
 
 const SecurityCaseWizard = () => {
+    const [selectedUsername, setSelectedUsername] = useState("");
+
     const [currentStep, setCurrentStep] = useState(0);
     const [stepData, setStepData] = useState({
         0: [],
@@ -19,7 +21,21 @@ const SecurityCaseWizard = () => {
         { name: "מזרח", image: null },
         { name: "מערב", image: null },
     ]);
+    const [users, setUsers] = useState([]);
 
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await fetch("http://localhost:3001/api/users"); // Replace with your backend endpoint
+                debugger;
+                const data = await response.json();
+                setUsers(data);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+        fetchUsers();
+    }, []);
     const handleSave = (data) => {
         setStepData((prev) => ({
             ...prev,
@@ -62,6 +78,9 @@ const SecurityCaseWizard = () => {
     const handleStepClick = (index) => {
         setCurrentStep(index);
     };
+    const selectedUser = users.find((user) => user.username === selectedUsername); // Use selectedUsername from dropdown
+    const userLocation = selectedUser ? { lat: selectedUser.location.lat, lng: selectedUser.location.lng } : shaareZedekCoordinates;
+
     const steps = [
         {
             title: "דרכי גישה",
@@ -91,7 +110,9 @@ const SecurityCaseWizard = () => {
             title: "כניסות ויציאות",
             content: (
                 <LocationEditorWithMap
-                    center={shaareZedekCoordinates}
+                    initialCenter={userLocation}
+
+                    // center={shaareZedekCoordinates}
                     title="כניסות ויציאות"
                     initialData={stepData[2]}
                     onSave={handleSave}
@@ -145,24 +166,48 @@ const SecurityCaseWizard = () => {
     return (
         <div className="container is-max-desktop">
 
-        <div className="security-case-wizard" style={{ direction: "rtl" }}>
-            <h1 className="has-text-centered title">ניהול תיק אבטחה</h1>
+            <div className="security-case-wizard" style={{direction: "rtl"}}>
+                <div className="field has-text-centered">
+                    <label className="label">בחר יוזר:</label>
+                    <div className="control">
+                        <div className="select is-primary">
+                            <select
 
-            {/* Step Indicator */}
-            <div className="has-text-centered">
+                                value={selectedUsername}
+                                onChange={(e) => setSelectedUsername(e.target.value)}
+                            >
+                                <option value="">בחר יוזר</option>
+                                {users.map((user) => (
+                                    <option key={user.username} value={user.username}>
+                                        {user.username} ({user.email}
 
-            <nav className="steps">
-                <ul>
-                    {steps.map((step, index) => (
-                        <li
-                            onClick={() => handleStepClick(index)}
-                            style={{ cursor: "pointer" }}
+                                        )
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+{/*<div>*/}
+{/*    {selectedUsername}*/}
+{/*</div>*/}
+                <h1 className="has-text-centered title">ניהול תיק אבטחה</h1>
 
-                            key={index}
-                            className={`steps-segment ${
-                                currentStep === index ? "is-active" : ""
-                            }`}
-                        >
+                {/* Step Indicator */}
+                <div className="has-text-centered">
+
+                    <nav className="steps">
+                        <ul>
+                            {steps.map((step, index) => (
+                                <li
+                                    onClick={() => handleStepClick(index)}
+                                    style={{cursor: "pointer"}}
+
+                                    key={index}
+                                    className={`steps-segment ${
+                                        currentStep === index ? "is-active" : ""
+                                    }`}
+                                >
               <span
                   className={`steps-marker ${
                       currentStep === index
@@ -172,73 +217,73 @@ const SecurityCaseWizard = () => {
               >
                 {index + 1}
               </span>
-                            <div className="steps-content">
-                                <p className="is-size-6">{step.title}</p>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
-            </div>
-            {/* Step Content */}
-            <div className="box">
-                <h2 className="subtitle">{steps[currentStep].title}</h2>
-                {steps[currentStep].content}
-            </div>
-
-            {/* Navigation Buttons */}
-            <div className="buttons is-centered">
-                <button
-                    className="button is-link"
-                    onClick={handlePrevious}
-                    disabled={currentStep === 0}
-                >
-                    הקודם
-                </button>
-                <button
-                    className={`button ${isLastStep ? "is-success" : "is-link"}`}
-                    onClick={handleNext}
-                >
-                    {isLastStep ? "סיום" : "הבא"}
-                </button>
-            </div>
-
-            {/* Summary Section */}
-            {isLastStep && (
-                <div className="box">
-                    <h2 className="subtitle">תצוגה מקיפה</h2>
-                    <div>
-                        <h3>דרכי גישה:</h3>
-                        <pre>{JSON.stringify(stepData[0], null, 2)}</pre>
-                    </div>
-                    <div>
-                        <h3>נהלי חירום:</h3>
-                        <pre>{JSON.stringify(stepData[1], null, 2)}</pre>
-                    </div>
-                    <div>
-                        <h3>כניסות ויציאות:</h3>
-                        <pre>{JSON.stringify(stepData[2], null, 2)}</pre>
-                    </div>
-                    <div>
-                        <h3>כניסות לחניונים:</h3>
-                        <pre>{JSON.stringify(stepData[3], null, 2)}</pre>
-                    </div>
-                    <div>
-                        <h3>אנשי קשר לחירום:</h3>
-                        <pre>{JSON.stringify(stepData[4], null, 2)}</pre>
-                    </div>
-                    <div>
-                        <h3>מפות:</h3>
-                        {maps.map((map, index) => (
-                            <div key={index}>
-                                <p>{map.name}</p>
-                                {map.image && <img src={map.image} alt={map.name} style={{ width: "100%" }} />}
-                            </div>
-                        ))}
-                    </div>
+                                    <div className="steps-content">
+                                        <p className="is-size-6">{step.title}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
                 </div>
-            )}
-        </div>
+                {/* Step Content */}
+                <div className="box">
+                    <h2 className="subtitle">{steps[currentStep].title}</h2>
+                    {steps[currentStep].content}
+                </div>
+
+                {/* Navigation Buttons */}
+                <div className="buttons is-centered">
+                    <button
+                        className="button is-link"
+                        onClick={handlePrevious}
+                        disabled={currentStep === 0}
+                    >
+                        הקודם
+                    </button>
+                    <button
+                        className={`button ${isLastStep ? "is-success" : "is-link"}`}
+                        onClick={handleNext}
+                    >
+                        {isLastStep ? "סיום" : "הבא"}
+                    </button>
+                </div>
+
+                {/* Summary Section */}
+                {isLastStep && (
+                    <div className="box">
+                        <h2 className="subtitle">תצוגה מקיפה</h2>
+                        <div>
+                            <h3>דרכי גישה:</h3>
+                            <pre>{JSON.stringify(stepData[0], null, 2)}</pre>
+                        </div>
+                        <div>
+                            <h3>נהלי חירום:</h3>
+                            <pre>{JSON.stringify(stepData[1], null, 2)}</pre>
+                        </div>
+                        <div>
+                            <h3>כניסות ויציאות:</h3>
+                            <pre>{JSON.stringify(stepData[2], null, 2)}</pre>
+                        </div>
+                        <div>
+                            <h3>כניסות לחניונים:</h3>
+                            <pre>{JSON.stringify(stepData[3], null, 2)}</pre>
+                        </div>
+                        <div>
+                            <h3>אנשי קשר לחירום:</h3>
+                            <pre>{JSON.stringify(stepData[4], null, 2)}</pre>
+                        </div>
+                        <div>
+                            <h3>מפות:</h3>
+                            {maps.map((map, index) => (
+                                <div key={index}>
+                                    <p>{map.name}</p>
+                                    {map.image && <img src={map.image} alt={map.name} style={{width: "100%"}}/>}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

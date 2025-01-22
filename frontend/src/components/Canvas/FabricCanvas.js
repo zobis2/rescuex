@@ -101,6 +101,27 @@ const FabricCanvasWithIcons = () => {
         canvas.setZoom(zoom / 1.1); // Decrease zoom by 10%
         canvas.requestRenderAll();
     };
+    const rotateBackgroundImage = (angle) => {
+        if (!canvas) return;
+
+        const backgroundImage = canvas.backgroundImage;
+        if (backgroundImage) {
+            // Adjust the angle of the background image
+            const currentAngle = backgroundImage.angle || 0;
+            backgroundImage.angle = currentAngle + angle;
+
+            // Center the background image on the canvas
+            backgroundImage.originX = 'center';
+            backgroundImage.originY = 'center';
+            backgroundImage.left = canvas.getWidth() / 2;
+            backgroundImage.top = canvas.getHeight() / 2;
+
+            backgroundImage.setCoords();
+            canvas.renderAll();
+        } else {
+            console.error('No background image found on the canvas.');
+        }
+    };
     return (
         <div>
             {/* Image upload */}
@@ -114,9 +135,9 @@ const FabricCanvasWithIcons = () => {
                     <button key={icon.name} onClick={() => handleIconClick(icon)}>
                         <img
                             // src={`data:image/svg+xml;utf8,${encodeURIComponent(icon.path)}`
-                                src={icon.path}
+                            src={icon.path}
 
-                                alt={icon.label}
+                            alt={icon.label}
                             style={{width: 30, height: 30}}
                         />
                         <br/>
@@ -130,7 +151,12 @@ const FabricCanvasWithIcons = () => {
             <button className="button is-link" onClick={saveCanvasAsImage}>שמור תמונה</button>
             <button className="button is-link" onClick={zoomIn}>זום אין</button>
             <button className="button is-link" onClick={zoomOut}>זום אאוט</button>
-
+            <button className="button is-link" onClick={() => rotateBackgroundImage(90)}>
+                סובב
+            </button>
+            <button className="button is-link" onClick={() => rotateBackgroundImage(-90)}>
+                 סובב הפוך
+            </button>
         </div>
     );
 };

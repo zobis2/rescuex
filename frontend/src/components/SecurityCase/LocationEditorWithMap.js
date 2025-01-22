@@ -8,8 +8,9 @@ const containerStyle = {
 };
 
 
-const LocationEditorWithMap = ({ center,title, initialData = [], onSave }) => {
-    const defaultCenter=center;
+const LocationEditorWithMap = ({ center,title, initialData = [], onSave,initialCenter }) => {
+    const [mapCenter, setMapCenter] = useState(initialCenter || center);
+    const defaultCenter=mapCenter;
 
     const [locations, setLocations] = useState(initialData);
     const [currentLocation, setCurrentLocation] = useState({
