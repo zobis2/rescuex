@@ -3,6 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LocationPicker from "./LocationPicker";
 import {useNavigate} from "react-router-dom";
+import axios from '../../utils/axiosConfig'
 
 const AddUserForm = () => {
   const navigate = useNavigate();
@@ -52,16 +53,10 @@ const AddUserForm = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await axios.post("/api/users", formData);
 
-      if (!response.ok) {
-        throw new Error(await response.text());
+      if (response.status!==200) {
+        throw new Error( response.data);
       }
 
       toast.success("יוזר נוסף בהצלחה - חוזר לעמוד ראשי");

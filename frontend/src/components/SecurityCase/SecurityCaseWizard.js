@@ -3,6 +3,7 @@ import KeyValueEditor from "./KeyValueEditor";
 import LocationEditorWithMap from "./LocationEditorWithMap";
 import ContactEditor from "./ContactEditor";
 import MapsUploader from "./MapsUploader";
+import axios from '../../utils/axiosConfig'
 
 const SecurityCaseWizard = () => {
     const [selectedUsername, setSelectedUsername] = useState("");
@@ -26,9 +27,9 @@ const SecurityCaseWizard = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await fetch("http://localhost:3001/api/users"); // Replace with your backend endpoint
+                const response = await axios.get("/api/users"); // Replace with your backend endpoint
                 debugger;
-                const data = await response.json();
+                const data =response.data;
                 setUsers(data);
             } catch (error) {
                 console.error("Error fetching users:", error);

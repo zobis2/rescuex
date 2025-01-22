@@ -17,6 +17,9 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
     try {
         const newUser = req.body;
+        if (!newUser.email || !newUser.password) {
+            throw new Error("Invalid email or password");
+        }
         await saveUser(newUser);
         res.send("User added successfully");
     } catch (error) {
