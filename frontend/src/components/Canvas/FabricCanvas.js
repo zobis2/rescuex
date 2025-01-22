@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
-import allIcons from "./icons.json"; // Assuming your icons JSON file is named `icons.json`
+import allIcons from "./icons.json";
+
+let _clipboard = null; // Clipboard for copy-paste functionality
 
 const FabricCanvasWithIcons = () => {
     const canvasRef = useRef(null);
@@ -8,27 +10,32 @@ const FabricCanvasWithIcons = () => {
     const [icons, setIcons] = useState([]);
     const [currentIcon, setCurrentIcon] = useState(null);
 
-    // Initialize Fabric.js canvas and load icons
     useEffect(() => {
+        // Initialize the Fabric.js canvas
         const fabricCanvas = new fabric.Canvas("canvas", {
             width: 800,
             height: 600,
-            backgroundColor: "#f0f0f0",
+            selection: false, // Disable multi-selection
         });
         setCanvas(fabricCanvas);
 
         // Load icons from JSON
         setIcons(allIcons);
+
+        // Clean up on unmount
+        return () => {
+            fabricCanvas.dispose();
+        };
     }, []);
 
-    // Handle image upload and set it as canvas background
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (event) => {
                 fabric.Image.fromURL(event.target.result, (img) => {
-                    img.scaleToWidth(800); // Fit image to canvas
+                    img.scaleToWidth(800);
+                    img.selectable = false; // Make the image static
                     canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
                 });
             };
@@ -36,36 +43,32 @@ const FabricCanvasWithIcons = () => {
         }
     };
 
-    // Handle icon selection
     const handleIconClick = (icon) => {
-        setCurrentIcon(icon); // Set the selected icon
+        // Load the selected SVG icon onto the canvas
+        fabric.loadSVGFromString(icon.svg, (objects, options) => {
+            const svgIcon = fabric.util.groupSVGElements(objects, options);
+            svgIcon.scale(0.2); // Adjust scale
+            svgIcon.set({ left: 100, top: 100, selectable: true });
+            canvas.add(svgIcon);
+            canvas.setActiveObject(svgIcon);
+            canvas.renderAll();
+            setCurrentIcon(svgIcon); // Set current icon for copying
+        });
+    };
+    const saveCanvasAsImage = () => {
+        const dataURL = canvas.toDataURL({
+            format: 'png', // You can also use 'jpeg'
+            quality: 100,    // Quality for JPEG (0 to 1)
+        });
+
+        // Create a temporary link to trigger the download
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'canvas-image.png'; // The name of the saved file
+        link.click();
     };
 
-    // Handle canvas click to place the selected icon
-    const handleCanvasClick = (event) => {
-        if (currentIcon) {
-            fabric.loadSVGFromString(currentIcon.svg, (objects, options) => {
-                const svgIcon = fabric.util.groupSVGElements(objects, options);
-                svgIcon.scale(0.1); // Adjust scale to fit canvas
-                const pointer = canvas.getPointer(event.e); // Get mouse pointer position
-                svgIcon.set({ left: pointer.x, top: pointer.y });
-                canvas.add(svgIcon);
-                canvas.renderAll();
-            });
-        }
-    };
 
-    // Add event listener for canvas clicks
-    useEffect(() => {
-        if (canvas) {
-            canvas.on("mouse:down", handleCanvasClick);
-        }
-        return () => {
-            if (canvas) {
-                canvas.off("mouse:down", handleCanvasClick);
-            }
-        };
-    }, [canvas, currentIcon]);
 
     return (
         <div>
@@ -74,7 +77,7 @@ const FabricCanvasWithIcons = () => {
                 <input type="file" accept="image/*" onChange={handleImageUpload} />
             </div>
 
-            {/* Icons */}
+            {/* Icon selection */}
             <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
                 {icons.map((icon) => (
                     <button key={icon.name} onClick={() => handleIconClick(icon)}>
@@ -91,6 +94,9 @@ const FabricCanvasWithIcons = () => {
 
             {/* Canvas */}
             <canvas id="canvas" ref={canvasRef} style={{ border: "1px solid black" }}></canvas>
+            <button className="button is-link" onClick={saveCanvasAsImage}>שמור תמונה</button>
+            {/* Copy-Paste Buttons */}
+
         </div>
     );
 };
