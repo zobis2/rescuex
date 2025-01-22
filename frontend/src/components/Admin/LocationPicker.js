@@ -17,7 +17,7 @@ const LocationPicker = ({ onLocationSelect }) => {
 
 
     const handlePlaceChanged = () => {
-        const place = searchBox.getPlace();
+        const place = searchBox?searchBox.getPlace():null;
         debugger;
         if (place && place.geometry) {
             const { lat, lng } = place.geometry.location;
