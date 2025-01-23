@@ -9,6 +9,7 @@ const FabricCanvasWithIcons = () => {
     const [canvas, setCanvas] = useState(null);
     const [icons, setIcons] = useState([]);
     const [currentIcon, setCurrentIcon] = useState(null);
+    const [count, setCount] = useState(null);
 
     useEffect(() => {
         // Initialize the Fabric.js canvas
@@ -21,6 +22,12 @@ const FabricCanvasWithIcons = () => {
 
         // Load icons from JSON
         setIcons(allIcons);
+        let firstCount={}
+        allIcons.forEach(icon=>{
+            firstCount[icon.name] =0;
+        })
+        debugger;
+        setCount(firstCount);
 
         // Clean up on unmount
         return () => {
@@ -45,6 +52,10 @@ const FabricCanvasWithIcons = () => {
 
     const handleIconClick = async (icon) => {
         try {
+            debugger;
+           let currentCount=JSON.parse(JSON.stringify(count));
+           currentCount[icon.name]++;
+            setCount(currentCount);
             fabric.Image.fromURL(icon.path, (img) => {
                 img.scale(0.05); // Adjust the scale if needed
                 img.set({
@@ -145,7 +156,9 @@ const FabricCanvasWithIcons = () => {
                     </button>
                 ))}
             </div>
-
+            <div>
+                {JSON.stringify(count)}
+            </div>
             {/* Canvas */}
             <canvas id="canvas" ref={canvasRef} style={{border: "1px solid black"}}></canvas>
             <button className="button is-link" onClick={saveCanvasAsImage}>שמור תמונה</button>
