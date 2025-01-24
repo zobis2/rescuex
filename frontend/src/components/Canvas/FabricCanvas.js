@@ -24,7 +24,7 @@ const FabricCanvasWithIcons = () => {
         setIcons(allIcons);
         let firstCount={}
         allIcons.forEach(icon=>{
-            firstCount[icon.name] =0;
+            firstCount[icon.label] =0;
         })
         debugger;
         setCount(firstCount);
@@ -34,6 +34,35 @@ const FabricCanvasWithIcons = () => {
             fabricCanvas.dispose();
         };
     }, []);
+    const addOrientationMarkers = () => {
+        if (!canvas) return;
+
+        const canvasWidth = canvas.getWidth();
+        const canvasHeight = canvas.getHeight();
+
+        // Define positions for each orientation
+        const positions = {
+            צפון: { left: canvasWidth / 2, top: 20 },
+            דרום: { left: canvasWidth / 2, top: canvasHeight - 40 },
+            מערב: { left: canvasWidth - 40, top: canvasHeight / 2 },
+            מזרח: { left: 20, top: canvasHeight / 2 },
+        };
+
+        Object.keys(positions).forEach((orientation) => {
+            const pos = positions[orientation];
+            const text = new fabric.Text(orientation.toUpperCase(), {
+                ...pos,
+                fontSize: 16,
+                fill: "red",
+                originX: "center",
+                originY: "center",
+                selectable: false,
+            });
+            canvas.add(text);
+        });
+
+        canvas.renderAll();
+    };
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
@@ -54,7 +83,7 @@ const FabricCanvasWithIcons = () => {
         try {
             debugger;
            let currentCount=JSON.parse(JSON.stringify(count));
-           currentCount[icon.name]++;
+           currentCount[icon.label]++;
             setCount(currentCount);
             fabric.Image.fromURL(icon.path, (img) => {
                 img.scale(0.05); // Adjust the scale if needed
@@ -134,42 +163,59 @@ const FabricCanvasWithIcons = () => {
         }
     };
     return (
-        <div>
+        <div className='container'>
             {/* Image upload */}
-            <div style={{marginBottom: "10px"}}>
-                <input type="file" accept="image/*" onChange={handleImageUpload}/>
+            <div className="field">
+                <label className="label">Upload Image</label>
+                <div className="control">
+                    <input className="input" type="file" accept="image/*" onChange={handleImageUpload}/>
+                </div>
             </div>
 
             {/* Icon selection */}
-            <div style={{display: "flex", gap: "10px", marginBottom: "10px"}}>
+            <div className="columns is-multiline is-mobile">
                 {icons.map((icon) => (
-                    <button key={icon.name} onClick={() => handleIconClick(icon)}>
-                        <img
-                            // src={`data:image/svg+xml;utf8,${encodeURIComponent(icon.path)}`
-                            src={icon.path}
-
-                            alt={icon.label}
-                            style={{width: 30, height: 30}}
-                        />
-                        <br/>
-                        {icon.label}
-                    </button>
+                    <div className="column is-one-quarter" key={icon.name}>
+                        <button className="button is-light" onClick={() => handleIconClick(icon)}>
+                            <img
+                                src={icon.path}
+                                alt={icon.label}
+                                style={{width: "24px", height: "24px"}}
+                            />
+                            <br/>
+                            {icon.label}
+                        </button>
+                    </div>
                 ))}
             </div>
             <div>
                 {JSON.stringify(count)}
             </div>
             {/* Canvas */}
-            <canvas id="canvas" ref={canvasRef} style={{border: "1px solid black"}}></canvas>
-            <button className="button is-link" onClick={saveCanvasAsImage}>שמור תמונה</button>
-            <button className="button is-link" onClick={zoomIn}>זום אין</button>
-            <button className="button is-link" onClick={zoomOut}>זום אאוט</button>
-            <button className="button is-link" onClick={() => rotateBackgroundImage(90)}>
+            <div className="box">
+
+            <canvas id="canvas" ref={canvasRef} style={{
+                border: "1px solid black",
+                width: "100%", // תופס את כל רוחב הקונטיינר
+                maxWidth: "800px", // מגביל לגודל מקסימלי
+                height: "400px", // גובה סטנדרטי
+            }}></canvas>
+            </div>
+            <div className="buttons">
+
+            <button className="button is-link is-small" onClick={saveCanvasAsImage}>שמור תמונה</button>
+            <button className="button is-link is-small" onClick={zoomIn}>זום אין</button>
+            <button className="button is-link is-small" onClick={zoomOut}>זום אאוט</button>
+            <button className="button is-link is-small" onClick={() => rotateBackgroundImage(90)}>
                 סובב
             </button>
-            <button className="button is-link" onClick={() => rotateBackgroundImage(-90)}>
-                 סובב הפוך
+            <button className="button is-link is-small" onClick={() => rotateBackgroundImage(-90)}>
+                סובב הפוך
             </button>
+            <button className="button is-link is-small" onClick={() => addOrientationMarkers()}>
+                הוספת אורינטציה
+            </button>
+            </div>
         </div>
     );
 };
