@@ -4,6 +4,7 @@ import LocationEditorWithMap from "./LocationEditorWithMap";
 import ContactEditor from "./ContactEditor";
 import MapsUploader from "./MapsUploader";
 import axios from '../../utils/axiosConfig'
+import FabricCanvasWithIcons from "../Canvas/FabricCanvas";
 
 const SecurityCaseWizard = () => {
     const [selectedUsername, setSelectedUsername] = useState("");
@@ -15,13 +16,14 @@ const SecurityCaseWizard = () => {
         2: [],
         3: [],
         4: [],
+        5:[]
     });
     const [maps, setMaps] = useState([
-        { name: "צפון", image: null },
-        { name: "דרום", image: null },
-        { name: "מזרח", image: null },
-        { name: "מערב", image: null },
+        { }, // Each floor has its maps
     ]);
+    const [currentMapIndex, setCurrentMapIndex] = useState(0);
+    const [editedMaps, setEditedMaps] = useState([]); // Stores edited canvas images
+
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -146,20 +148,79 @@ const SecurityCaseWizard = () => {
             title: "מפות המתחם",
             content: (
                 <>
-                    <div  className="  has-text-centered">
+                    <div className="  has-text-centered">
 
 
+                        <button onClick={handleAddCustomMap} className="button  is-warning">
+                            צור מפה עם שם חדש
+                        </button>
+                        <MapsUploader maps={maps} onSave={setMaps}/>
 
-                    <MapsUploader maps={maps} onSave={setMaps} />
-                    <button onClick={handleAddCustomMap} className="button  is-primary">
-                        העלאת מפה חדשה
-                    </button>
+                    </div>
+                </>
+            ),
+        },
+        {
+            title: "עריכת מפות",
+            content: (
+                <>
+                    <FabricCanvasWithIcons
+                        initialImage={maps[currentMapIndex]?.image}
+                        floorTitle={maps[currentMapIndex]?.floor || `קומה ${currentMapIndex + 1}`}
+                        onSave={(updatedImage) => {
+                            const updatedEditedMaps = [...editedMaps];
+                            updatedEditedMaps[currentMapIndex] = updatedImage; // Save edited map
+                            setEditedMaps(updatedEditedMaps);
+                        }}
+                    />
+
+                    <div className="buttons is-centered">
+                        <button
+                            className="button is-link"
+                            onClick={() => setCurrentMapIndex((prev) => Math.max(prev - 1, 0))}
+                            disabled={currentMapIndex === 0}
+                        >
+                            חזור למפה הקודמת ({maps[currentMapIndex - 1]?.floor || ""})
+                        </button>
+                        <button
+                            className="button is-link"
+                            onClick={() =>
+                                setCurrentMapIndex((prev) => Math.min(prev + 1, maps.length - 1))
+                            }
+                            disabled={currentMapIndex === maps.length - 1}
+                        >
+                            עבור למפה הבאה ({maps[currentMapIndex + 1]?.floor || ""})
+                        </button>
+                        <button
+                            className="button is-success"
+                            onClick={() => alert("עריכת המפות הושלמה!")}
+                            disabled={currentMapIndex !== maps.length - 1} // Only enable on the last map
+                        >
+                            סיים עריכת מפות
+                        </button>
                     </div>
                 </>
             ),
         },
     ];
-
+    const handleFinish = async () => {
+        try {
+            for (let i = 0; i < editedMaps.length; i++) {
+                const mapData = editedMaps[i];
+                if (mapData) {
+                    const response = await axios.put(
+                        `/s3/upload/${maps[i].floor}`, // Use the floor name as the file key
+                        { data: mapData }
+                    );
+                    console.log(`Uploaded ${maps[i].floor}:`, response.data);
+                }
+            }
+            alert("All maps have been uploaded successfully!");
+        } catch (error) {
+            console.error("Error uploading maps to S3:", error);
+            alert("Failed to upload maps. Please try again.");
+        }
+    };
     const handleNext = () => setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
     const handlePrevious = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
     const isLastStep = currentStep === steps.length - 1;
@@ -243,7 +304,7 @@ const SecurityCaseWizard = () => {
                     </button>
                     <button
                         className={`button ${isLastStep ? "is-success" : "is-link"}`}
-                        onClick={handleNext}
+                        onClick={isLastStep ? handleFinish : handleNext}
                     >
                         {isLastStep ? "סיום" : "הבא"}
                     </button>

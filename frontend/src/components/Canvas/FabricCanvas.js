@@ -4,13 +4,22 @@ import allIcons from "./icons.json";
 
 let _clipboard = null; // Clipboard for copy-paste functionality
 
-const FabricCanvasWithIcons = () => {
+const FabricCanvasWithIcons = ({ initialImage, onSave,floorTitle }) => {
     const canvasRef = useRef(null);
     const [canvas, setCanvas] = useState(null);
     const [icons, setIcons] = useState([]);
     const [currentIcon, setCurrentIcon] = useState(null);
     const [count, setCount] = useState(null);
-
+    const [step, setStep] = useState("upload"); // Default step is "upload"
+    useEffect(() => {
+        if (initialImage && canvas) {
+            fabric.Image.fromURL(initialImage, (img) => {
+                img.scaleToWidth(800);
+                img.selectable = false; // Static background
+                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+            });
+        }
+    }, [initialImage, canvas]);
     useEffect(() => {
         // Initialize the Fabric.js canvas
         const fabricCanvas = new fabric.Canvas("canvas", {
@@ -32,6 +41,11 @@ const FabricCanvasWithIcons = () => {
         // Clean up on unmount
         return () => {
             fabricCanvas.dispose();
+        };
+    }, []);
+    useEffect(() => {
+        return () => {
+            saveCanvasAsImage(); // Save the map when unmounting the component
         };
     }, []);
     const addOrientationMarkers = () => {
@@ -117,6 +131,7 @@ const FabricCanvasWithIcons = () => {
         }
     };
     const saveCanvasAsImage = () => {
+    if(!canvas) return;
         const dataURL = canvas.toDataURL({
             format: 'png', // You can also use 'jpeg'
             quality: 100,    // Quality for JPEG (0 to 1)
@@ -127,6 +142,11 @@ const FabricCanvasWithIcons = () => {
         link.href = dataURL;
         link.download = 'canvas-image.png'; // The name of the saved file
         link.click();
+            // Trigger the onSave callback
+            if (onSave) {
+                onSave(dataURL);
+            }
+
     };
 
 
@@ -165,12 +185,14 @@ const FabricCanvasWithIcons = () => {
     return (
         <div className='container'>
             {/* Image upload */}
-            <div className="field">
+            <h2 className="title has-text-centered">{floorTitle}</h2>
+
+            {!initialImage&&<div className="field">
                 <label className="label">Upload Image</label>
                 <div className="control">
                     <input className="input" type="file" accept="image/*" onChange={handleImageUpload}/>
                 </div>
-            </div>
+            </div>}
 
             {/* Icon selection */}
             <div className="columns is-multiline is-mobile">
@@ -194,27 +216,27 @@ const FabricCanvasWithIcons = () => {
             {/* Canvas */}
             <div className="box">
 
-            <canvas id="canvas" ref={canvasRef} style={{
-                border: "1px solid black",
-                width: "100%", // תופס את כל רוחב הקונטיינר
-                maxWidth: "800px", // מגביל לגודל מקסימלי
-                height: "400px", // גובה סטנדרטי
-            }}></canvas>
+                <canvas id="canvas" ref={canvasRef} style={{
+                    border: "1px solid black",
+                    width: "100%", // תופס את כל רוחב הקונטיינר
+                    maxWidth: "800px", // מגביל לגודל מקסימלי
+                    height: "400px", // גובה סטנדרטי
+                }}></canvas>
             </div>
             <div className="buttons">
 
-            <button className="button is-link is-small" onClick={saveCanvasAsImage}>שמור תמונה</button>
-            <button className="button is-link is-small" onClick={zoomIn}>זום אין</button>
-            <button className="button is-link is-small" onClick={zoomOut}>זום אאוט</button>
-            <button className="button is-link is-small" onClick={() => rotateBackgroundImage(90)}>
-                סובב
-            </button>
-            <button className="button is-link is-small" onClick={() => rotateBackgroundImage(-90)}>
-                סובב הפוך
-            </button>
-            <button className="button is-link is-small" onClick={() => addOrientationMarkers()}>
-                הוספת אורינטציה
-            </button>
+                <button className="button is-link is-small" onClick={saveCanvasAsImage}>שמור תמונה</button>
+                <button className="button is-link is-small" onClick={zoomIn}>זום אין</button>
+                <button className="button is-link is-small" onClick={zoomOut}>זום אאוט</button>
+                <button className="button is-link is-small" onClick={() => rotateBackgroundImage(90)}>
+                    סובב
+                </button>
+                <button className="button is-link is-small" onClick={() => rotateBackgroundImage(-90)}>
+                    סובב הפוך
+                </button>
+                <button className="button is-link is-small" onClick={() => addOrientationMarkers()}>
+                    הוספת אורינטציה
+                </button>
             </div>
         </div>
     );
