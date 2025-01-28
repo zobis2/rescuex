@@ -4,6 +4,15 @@ body {
 .App {
   text-align: center;
 }
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+}
 
 .App-logo {
   height: 40vmin;

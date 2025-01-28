@@ -19,8 +19,19 @@ import SecurityCaseWizard from "./components/SecurityCase/SecurityCaseWizard";
 // import ManageReports from './components/Reports/ManageReports';
 import { SnackbarProvider } from 'notistack';
 import 'bulma/css/bulma.css';
+import './App.css'
 import AddUserForm from "./components/Admin/AddUserForm";
 import FabricCanvas from "./components/Canvas/FabricCanvas";
+import HomePage from "./components/Home";
+const backgroundStyle = {
+    height: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    background: "radial-gradient(69.27% 51.64% at 50% 50%, rgba(0, 0, 0, 0) 0%, #002A45 100%), url('./bgBig.png')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+};
 
 function App() {
     debugger;
@@ -35,7 +46,8 @@ function App() {
         <SnackbarProvider maxSnack={3}>
 
         <Router basename="/">
-            <div className="App">
+            <div className="App" style={backgroundStyle}>
+                {/*<HomePage></HomePage>*/}
                 {isLoggedIn && <Navigation />}
                 <Routes>
                     {!isLoggedIn ? (
@@ -45,7 +57,6 @@ function App() {
                             {/*<Route path="/const-hierarchy" element={<ConstHierarchy />} />*/}
                             {/*<Route path="/rtsp" element={<RTSPProjectPage />} />*/}
 
-                            <Route path="/place-holder-replace" element={<PlaceHolderReplace />} />
                             <Route path="/security-case-wizard" element={<SecurityCaseWizard />} />
                             <Route path="/add-user-form" element={<AddUserForm />} />
                             <Route path="/canvas" element={<FabricCanvas />} />

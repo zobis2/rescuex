@@ -89,7 +89,7 @@ const KeyValueEditor = ({ title, initialData = [], predefinedKeys = [], onSave }
             </div>
             <ul className="is-flex is-flex-direction-column is-align-items-center">
                 {entries.map((entry, index) => (
-                    <li key={index} className="box" style={{ maxWidth: "400px", marginBottom: "10px" }}>
+                    <li key={index} className="box" style={{ maxWidth: "400px", marginBottom: "10px" , background: 'transparent'}}>
                         <strong>{entry.key}:</strong> {entry.value}{" "}
                         <button
                             onClick={() => handleDeleteEntry(index)}

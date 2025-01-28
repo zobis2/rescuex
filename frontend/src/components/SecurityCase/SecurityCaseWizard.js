@@ -263,7 +263,8 @@ const SecurityCaseWizard = () => {
                             {steps.map((step, index) => (
                                 <li
                                     onClick={() => handleStepClick(index)}
-                                    style={{cursor: "pointer"}}
+                                    style={{cursor: "pointer" , color:"yellow" ,   fontFamily: "Inter, sans-serif", // Correct way to specify Inter font
+                                            fontWeight: 455,}}
 
                                     key={index}
                                     className={`steps-segment ${
@@ -273,7 +274,7 @@ const SecurityCaseWizard = () => {
               <span
                   className={`steps-marker ${
                       currentStep === index
-                          ? "has-background-primary has-text-white"
+                          ? "has-background-primary has-text-yellow"
                           : ""
                   }`}
               >
@@ -288,7 +289,7 @@ const SecurityCaseWizard = () => {
                     </nav>
                 </div>
                 {/* Step Content */}
-                <div className="box">
+                <div className="box" style={{background:"transparent"}}>
                     <h2 className="subtitle">{steps[currentStep].title}</h2>
                     {steps[currentStep].content}
                 </div>
