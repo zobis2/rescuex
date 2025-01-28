@@ -29,6 +29,13 @@ const Navigation = () => {
                 {/*    הפקת דוח נגר*/}
                 {/*</button>*/}
                 <button
+                    className={`button ${selectedTab === '/user' ? 'is-active' : ''}`}
+                    onClick={() => handleNavigation('/user')}
+                >
+                  עבור לתצוגת יוזר
+                </button>
+                <button
+
                     className={`button ${selectedTab === '/security-case-wizard' ? 'is-active' : ''}`}
                     onClick={() => handleNavigation('/security-case-wizard')}
                 >

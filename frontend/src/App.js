@@ -23,11 +23,13 @@ import './App.css'
 import AddUserForm from "./components/Admin/AddUserForm";
 import FabricCanvas from "./components/Canvas/FabricCanvas";
 import HomePage from "./components/Home";
+import HamburgerMenu from "./components/HamburgerMenu";
+import UserPanel from "./components/UserPanel";
 const backgroundStyle = {
     height: "100vh",
     display: "flex",
     flexDirection: "column",
-    background: "radial-gradient(69.27% 51.64% at 50% 50%, rgba(0, 0, 0, 0) 0%, #002A45 100%), url('./bgBig.png')",
+    background: "radial-gradient(69.27% 51.64% at 50% 50%, rgba(0, 0, 0, 0) 0%, #002A45 100%), url('./bgNew.png')",
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
@@ -72,11 +74,14 @@ function App() {
                     ) : (
                         <>
                             {isLoggedIn && <Navigation />}
+
                             <Routes>
                                 {!isLoggedIn ? (
                                     <Route path="*" element={<LoginPage onLogin={handleLogin} />} />
                                 ) : (
                                     <>
+                                        <Route path="/user/*" element={<UserPanel />} /> {/* User Panel Route */}
+
                                         <Route path="/security-case-wizard" element={<SecurityCaseWizard />} />
                                         <Route path="/add-user-form" element={<AddUserForm />} />
                                         <Route path="/canvas" element={<FabricCanvas />} />

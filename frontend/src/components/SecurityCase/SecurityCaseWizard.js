@@ -230,7 +230,7 @@ const SecurityCaseWizard = () => {
 
             <div className="security-case-wizard" style={{direction: "rtl"}}>
                 <div className="field has-text-centered">
-                    <label className="label">בחר יוזר:</label>
+                    <label style={{color:"white"}} className="label">בחר יוזר:</label>
                     <div className="control">
                         <div className="select is-primary">
                             <select
@@ -263,7 +263,7 @@ const SecurityCaseWizard = () => {
                             {steps.map((step, index) => (
                                 <li
                                     onClick={() => handleStepClick(index)}
-                                    style={{cursor: "pointer" , color:"yellow" ,   fontFamily: "Inter, sans-serif", // Correct way to specify Inter font
+                                    style={{cursor: "pointer" , color:"greenyellow" ,   fontFamily: "Inter, sans-serif", // Correct way to specify Inter font
                                             fontWeight: 455,}}
 
                                     key={index}
