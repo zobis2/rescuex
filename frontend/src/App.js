@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import PlaceHolderReplace from './components/TemplateForm/TemplateForm';
@@ -17,7 +17,7 @@ import SecurityCaseWizard from "./components/SecurityCase/SecurityCaseWizard";
 // import ManageUsers from './components/PlatformUser/ManageUsers';
 // import ManageCameras from './components/Camera/ManageCameras';
 // import ManageReports from './components/Reports/ManageReports';
-import { SnackbarProvider } from 'notistack';
+import {enqueueSnackbar, SnackbarProvider} from 'notistack';
 import 'bulma/css/bulma.css';
 import './App.css'
 import AddUserForm from "./components/Admin/AddUserForm";
@@ -36,52 +36,60 @@ const backgroundStyle = {
 function App() {
     debugger;
     const LoggedAlready=    localStorage.getItem('loggedIn')?.toString()==='true';
+    const [isLoading, setIsLoading] = useState(true);
 
     const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+    useEffect(() => {
+        // Show HomePage for 2 seconds before rendering the app
+
+        const timer = setTimeout(() => {
+            enqueueSnackbar('ברוך הבא', {
+                variant: 'info',
+                anchorOrigin: {
+                    vertical: 'top', // Change to 'bottom' if needed
+                    horizontal: 'center'
+                },
+                autoHideDuration: 2000, // Optional: Close after 2 seconds
+                style: { textAlign: "center", fontSize: "20px" } // Optional: Customize text
+            });
+            setIsLoading(false);
+        }, 2500);
+
+        return () => clearTimeout(timer); // Cleanup timer on unmount
+    }, []);
 
     const handleLogin = () => {
         setIsLoggedIn(true);
     };
     return (
         <SnackbarProvider maxSnack={3}>
-
-        <Router basename="/">
-            <div className="App" style={backgroundStyle}>
-                {/*<HomePage></HomePage>*/}
-                {isLoggedIn && <Navigation />}
-                <Routes>
-                    {!isLoggedIn ? (
-                        <Route path="*" element={<LoginPage onLogin={handleLogin} />} />
+            <Router basename="/">
+                <div className="App" style={backgroundStyle}>
+                    {/* Show HomePage for 2 seconds before displaying the app */}
+                    {isLoading ? (
+                        <HomePage />
                     ) : (
                         <>
-                            {/*<Route path="/const-hierarchy" element={<ConstHierarchy />} />*/}
-                            {/*<Route path="/rtsp" element={<RTSPProjectPage />} />*/}
-
-                            <Route path="/security-case-wizard" element={<SecurityCaseWizard />} />
-                            <Route path="/add-user-form" element={<AddUserForm />} />
-                            <Route path="/canvas" element={<FabricCanvas />} />
-
-
-                            {/*<Route path="/upload-orthophoto-files" element={<OrthoPhotoMain />} />*/}
-                            {/*<Route path="/upload-ap-files" element={<UploadAPFilesPage />} />*/}
-                            {/*<Route path="/upload-ab-files" element={<UploadABFilesPage />} />*/}
-                            {/*<Route path="/calc-quantities" element={<CalcQuantities />} />*/}
-                            {/*<Route path="/compare-rebar" element={<CompareRebar />} />*/}
-                            {/*/!*<Route path="/crop-orthophoto" element={<CropOrthophotoPage />} />*!/*/}
-                            {/*<Route path="/download-files" element={<DownloadFilesPage />} />*/}
-                            {/*<Route path="/project-image" element={<ProjectImagePage />} />*/}
-                            {/*<Route path="/manage-platform-users" element={<ManageUsers />} />*/}
-                            {/*<Route path="/manage-cameras" element={<ManageCameras />} />*/}
-                            {/*<Route path="/manage-reports" element={<ManageReports />} />*/}
-                            <Route path="/" element={<Navigate to="/security-case-wizard" />} />
+                            {isLoggedIn && <Navigation />}
+                            <Routes>
+                                {!isLoggedIn ? (
+                                    <Route path="*" element={<LoginPage onLogin={handleLogin} />} />
+                                ) : (
+                                    <>
+                                        <Route path="/security-case-wizard" element={<SecurityCaseWizard />} />
+                                        <Route path="/add-user-form" element={<AddUserForm />} />
+                                        <Route path="/canvas" element={<FabricCanvas />} />
+                                        <Route path="/" element={<Navigate to="/security-case-wizard" />} />
+                                    </>
+                                )}
+                                <Route path="/" element={<Navigate to={isLoggedIn ? "/place-holder-replace" : "/login"} />} />
+                            </Routes>
                         </>
                     )}
-                    <Route path="/" element={<Navigate to={isLoggedIn ? "/place-holder-replace" : "/login"} />} />
-                </Routes>
-            </div>
-        </Router>
-            </SnackbarProvider>
-    );
+                </div>
+            </Router>
+        </SnackbarProvider>    );
 }
 
 export default App;
