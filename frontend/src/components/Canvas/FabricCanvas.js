@@ -44,11 +44,6 @@ const FabricCanvasWithIcons = ({ initialImage, onSave,floorTitle }) => {
             fabricCanvas.dispose();
         };
     }, []);
-    useEffect(() => {
-        return () => {
-            saveCanvasAsImage(); // Save the map when unmounting the component
-        };
-    }, []);
     const addOrientationMarkers = () => {
         if (!canvas) return;
 
