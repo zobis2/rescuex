@@ -19,7 +19,7 @@ const SecurityCaseWizard = () => {
         5:[]
     });
     const [maps, setMaps] = useState([
-        { }, // Each floor has its maps
+
     ]);
     const [currentMapIndex, setCurrentMapIndex] = useState(0);
     const [editedMaps, setEditedMaps] = useState([]); // Stores edited canvas images
@@ -164,7 +164,11 @@ const SecurityCaseWizard = () => {
             title: "עריכת מפות",
             content: (
                 <>
+
                     <FabricCanvasWithIcons
+                        key={currentMapIndex} // Ensures component remounts on index change
+
+                        savedState={editedMaps[currentMapIndex]?.state}
                         initialImage={maps[currentMapIndex]?.image}
                         floorTitle={maps[currentMapIndex]?.floor || `קומה ${currentMapIndex + 1}`}
                         onSave={(updatedImage) => {
@@ -173,32 +177,36 @@ const SecurityCaseWizard = () => {
                             setEditedMaps(updatedEditedMaps);
                         }}
                     />
+                    {maps.length > 0 && (<div>
 
-                    <div className="buttons is-centered">
-                        <button
-                            className="button is-link"
-                            onClick={() => setCurrentMapIndex((prev) => Math.max(prev - 1, 0))}
-                            disabled={currentMapIndex === 0}
-                        >
-                            חזור למפה הקודמת ({maps[currentMapIndex - 1]?.floor || ""})
-                        </button>
-                        <button
-                            className="button is-link"
-                            onClick={() =>
-                                setCurrentMapIndex((prev) => Math.min(prev + 1, maps.length - 1))
-                            }
-                            disabled={currentMapIndex === maps.length - 1}
-                        >
-                            עבור למפה הבאה ({maps[currentMapIndex + 1]?.floor || ""})
-                        </button>
-                        <button
-                            className="button is-success"
-                            onClick={() => alert("עריכת המפות הושלמה!")}
-                            disabled={currentMapIndex !== maps.length - 1} // Only enable on the last map
-                        >
-                            סיים עריכת מפות
-                        </button>
-                    </div>
+                        <div className="buttons is-centered">
+                            <button
+                                className="button is-link"
+                                onClick={() => setCurrentMapIndex((prev) => Math.max(prev - 1, 0))}
+                                disabled={currentMapIndex === 0}
+                            >
+                                חזור למפה הקודמת ({maps[currentMapIndex - 1]?.floor || ""})
+                            </button>
+                            <button
+                                className="button is-link"
+                                onClick={() =>
+                                    setCurrentMapIndex((prev) => Math.min(prev + 1, maps.length - 1))
+                                }
+                                disabled={currentMapIndex === maps.length - 1}
+                            >
+                                עבור למפה הבאה ({maps[currentMapIndex + 1]?.floor || ""})
+                            </button>
+                            <button
+                                className="button is-success"
+                                onClick={() => alert("עריכת המפות הושלמה!")}
+                                disabled={currentMapIndex !== maps.length - 1} // Only enable on the last map
+                            >
+                                סיים עריכת מפות
+                            </button>
+                        </div>
+
+
+                    </div>)}
                 </>
             ),
         },
@@ -210,7 +218,7 @@ const SecurityCaseWizard = () => {
                 if (mapData) {
                     const response = await axios.put(
                         `/s3/upload/${maps[i].floor}`, // Use the floor name as the file key
-                        { data: mapData }
+                        {data: mapData}
                     );
                     console.log(`Uploaded ${maps[i].floor}:`, response.data);
                 }
@@ -227,7 +235,7 @@ const SecurityCaseWizard = () => {
 
     return (
         <div className="container is-max-desktop">
-            <div className="security-case-wizard box" style={{background:"transparent", direction: "rtl" }}>
+            <div className="security-case-wizard box" style={{background: "transparent", direction: "rtl"}}>
                 <h1 className="title has-text-centered">ניהול תיק אבטחה</h1>
 
                 {/* User Selection */}

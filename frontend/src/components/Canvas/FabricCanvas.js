@@ -4,22 +4,42 @@ import allIcons from "./icons.json";
 
 let _clipboard = null; // Clipboard for copy-paste functionality
 
-const FabricCanvasWithIcons = ({ initialImage, onSave,floorTitle }) => {
+const FabricCanvasWithIcons = ({ initialImage, onSave,floorTitle ,savedState}) => {
+    debugger;
     const canvasRef = useRef(null);
     const [canvas, setCanvas] = useState(null);
     const [icons, setIcons] = useState([]);
     const [currentIcon, setCurrentIcon] = useState(null);
     const [count, setCount] = useState(null);
-    const [step, setStep] = useState("upload"); // Default step is "upload"
+    const [placedIcons, setPlacedIcons] = useState([]);
     useEffect(() => {
         if (initialImage && canvas) {
             fabric.Image.fromURL(initialImage, (img) => {
                 img.scaleToWidth(800);
-                img.selectable = false; // Static background
+                img.selectable = false;
                 canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas));
+
+                // Load saved icons for this floor
+                if (savedState) {
+                    let  icons  = savedState.icons?savedState.icons:[];
+                    setPlacedIcons(icons );
+
+                    icons.forEach(({ locationOnImage, iconType }) => {
+                        const iconData = allIcons.find((i) => i.label === iconType);
+                        if (iconData) {
+                            fabric.Image.fromURL(iconData.path, (img) => {
+                                img.scale(0.05);
+                                img.set({ ...locationOnImage, selectable: true });
+                                canvas.add(img);
+                                canvas.renderAll();
+                            });
+                        }
+                    });
+                }
             });
         }
     }, [initialImage, canvas]);
+
     useEffect(() => {
         // Initialize the Fabric.js canvas
         const fabricCanvas = new fabric.Canvas("canvas", {
@@ -36,7 +56,7 @@ const FabricCanvasWithIcons = ({ initialImage, onSave,floorTitle }) => {
         allIcons.forEach(icon=>{
             firstCount[icon.label] =0;
         })
-        debugger;
+        // debugger;
         setCount(firstCount);
 
         // Clean up on unmount
@@ -104,6 +124,13 @@ const FabricCanvasWithIcons = ({ initialImage, onSave,floorTitle }) => {
                 });
                 canvas.add(img);
                 canvas.renderAll();
+                // Save the icon position & type
+                const newIconData = {
+                    type: "icon",
+                    locationOnImage: { left: img.left, top: img.top },
+                    iconType: icon.label,
+                };
+                setPlacedIcons([...placedIcons, newIconData]);
             });
             // const response = await fetch(icon.path);
             // const contentType = response.headers.get('Content-Type');
@@ -132,16 +159,18 @@ const FabricCanvasWithIcons = ({ initialImage, onSave,floorTitle }) => {
             format: 'png', // You can also use 'jpeg'
             quality: 100,    // Quality for JPEG (0 to 1)
         });
+        const canvasState = JSON.stringify({
+            background: initialImage, // Save the background image
+            icons: placedIcons, // Save icons with positions
+        });
+        onSave({ image: dataURL, state: JSON.parse(canvasState) });
 
         // Create a temporary link to trigger the download
         const link = document.createElement('a');
         link.href = dataURL;
         link.download = 'canvas-image.png'; // The name of the saved file
         link.click();
-            // Trigger the onSave callback
-            if (onSave) {
-                onSave(dataURL);
-            }
+
 
     };
 
