@@ -33,73 +33,68 @@ const KeyValueEditor = ({ title, initialData = [], predefinedKeys = [], onSave }
     };
 
     return (
-        <div className="key-value-editor has-text-centered" style={{ direction: "rtl" }}>
-            <h2 className="title">{title}</h2>
-            <div className="field is-grouped is-justify-content-center">
-                <div className="control">
-                    <div className="select">
-                        <select
-                            value={keyInput}
-                            onChange={(e) => setKeyInput(e.target.value)}
-                        >
-                            <option value="" disabled>
-                                בחר מפתח
-                            </option>
-                            {predefinedKeys.map((key, index) => (
-                                <option key={index} value={key}>
-                                    {key}
-                                </option>
-                            ))}
-                        </select>
+        <div className="container">
+            <div className="box has-text-centered" style={{ background:"transparent",direction: "rtl" }}>
+                <h2 className="title">{title}</h2>
+
+                {/* Key selection & value input */}
+                <div className="field">
+                    <label className="label">בחר מפתח</label>
+                    <div className="control">
+                        <div className="select is-fullwidth">
+                            <select value={keyInput} onChange={(e) => setKeyInput(e.target.value)}>
+                                <option value="" disabled>בחר מפתח</option>
+                                {predefinedKeys.map((key, index) => (
+                                    <option key={index} value={key}>{key}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <div className="control">
-                    <input
-                        type="text"
-                        placeholder="ערך"
-                        value={valueInput}
-                        onChange={(e) => setValueInput(e.target.value)}
-                        className="input"
-                    />
+
+                <div className="field">
+                    <label className="label">ערך</label>
+                    <div className="control">
+                        <input type="text" placeholder="ערך" value={valueInput} onChange={(e) => setValueInput(e.target.value)} className="input" />
+                    </div>
                 </div>
-                <div className="control">
-                    <button onClick={handleAddEntry} className="button is-primary">
-                        הוסף
-                    </button>
-                </div>
-            </div>
-            <div className="field is-grouped is-justify-content-center">
-                <div className="control">
-                    <input
-                        type="text"
-                        placeholder="הוסף מפתח מותאם אישית"
-                        value={customKey}
-                        onChange={(e) => setCustomKey(e.target.value)}
-                        className="input"
-                    />
-                </div>
-                <div className="control">
-                    <button
-                        onClick={handleAddCustomKey}
-                        className="button is-link"
-                    >
-                        הוסף אופציה
-                    </button>
-                </div>
-            </div>
-            <ul className="is-flex is-flex-direction-column is-align-items-center">
-                {entries.map((entry, index) => (
-                    <li key={index} className="box" style={{ maxWidth: "400px", marginBottom: "10px" , background: 'transparent'}}>
-                        <strong>{entry.key}:</strong> {entry.value}{" "}
-                        <button
-                            onClick={() => handleDeleteEntry(index)}
-                            className="button is-small is-danger"
-                        >
-                            מחק
+
+                <div className="field">
+                    <div className="control">
+                        <button onClick={handleAddEntry} className="button is-primary is-fullwidth">
+                            הוסף
                         </button>
-                    </li>
-                ))}
-            </ul>
+                    </div>
+                </div>
+
+                {/* Custom key input */}
+                <div className="field">
+                    <label className="label">הוסף מפתח מותאם אישית</label>
+                    <div className="control">
+                        <input type="text" placeholder="מפתח חדש" value={customKey} onChange={(e) => setCustomKey(e.target.value)} className="input" />
+                    </div>
+                    <div className="control">
+                        <button onClick={handleAddCustomKey} className="button is-link is-fullwidth">
+                            הוסף אופציה
+                        </button>
+                    </div>
+                </div>
+
+                {/* Entries list */}
+                <div className="field">
+                    <label className="label">רשימת מפתחות</label>
+                    <ul className="list">
+                        {entries.map((entry, index) => (
+                            <li key={index} className="box">
+                                <span className="has-text-weight-bold">{entry.key}:</span> {entry.value}
+                                <button onClick={() => handleDeleteEntry(index)} className="button is-small is-danger is-pulled-left">
+                                    מחק
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
         </div>
     );
 };

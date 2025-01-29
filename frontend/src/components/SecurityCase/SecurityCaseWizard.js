@@ -227,84 +227,86 @@ const SecurityCaseWizard = () => {
 
     return (
         <div className="container is-max-desktop">
+            <div className="security-case-wizard box" style={{background:"transparent", direction: "rtl" }}>
+                <h1 className="title has-text-centered">ניהול תיק אבטחה</h1>
 
-            <div className="security-case-wizard" style={{direction: "rtl"}}>
-                <div className="field has-text-centered">
-                    <label style={{color:"white"}} className="label">בחר יוזר:</label>
+                {/* User Selection */}
+                <div className="field">
+                    <label className="label has-text-white">בחר יוזר:</label>
                     <div className="control">
-                        <div className="select is-primary">
-                            <select
-
-                                value={selectedUsername}
-                                onChange={(e) => setSelectedUsername(e.target.value)}
-                            >
+                        <div className="select is-fullwidth">
+                            <select value={selectedUsername} onChange={(e) => setSelectedUsername(e.target.value)}>
                                 <option value="">בחר יוזר</option>
                                 {users.map((user) => (
                                     <option key={user.username} value={user.username}>
-                                        {user.username} ({user.email}
-
-                                        )
+                                        {user.username} ({user.email})
                                     </option>
                                 ))}
                             </select>
                         </div>
                     </div>
                 </div>
-{/*<div>*/}
-{/*    {selectedUsername}*/}
-{/*</div>*/}
-                <h1 className="has-text-centered title">ניהול תיק אבטחה</h1>
 
-                {/* Step Indicator */}
-                <div className="has-text-centered">
-
-                    <nav className="steps">
-                        <ul>
-                            {steps.map((step, index) => (
-                                <li
-                                    onClick={() => handleStepClick(index)}
-                                    style={{cursor: "pointer" , color:"greenyellow" ,   fontFamily: "Inter, sans-serif", // Correct way to specify Inter font
-                                            fontWeight: 455,}}
-
-                                    key={index}
-                                    className={`steps-segment ${
-                                        currentStep === index ? "is-active" : ""
-                                    }`}
+                {/* Steps Navigation */}
+                {/* Steps Navigation */}
+                <nav className="steps">
+                    <ul
+                        className="steps has-text-centered is-flex is-flex-wrap-wrap is-justify-content-center"
+                        style={{ gap: "10px", padding: "0", listStyle: "none" }}
+                    >
+                        {steps.map((step, index) => (
+                            <li
+                                key={index}
+                                className={`steps-segment ${currentStep === index ? "is-active" : ""}`}
+                                onClick={() => handleStepClick(index)}
+                                style={{
+                                    flex: "1 1 auto",
+                                    minWidth: "120px",
+                                    maxWidth: "160px",
+                                    textAlign: "center",
+                                    cursor: "pointer",
+                                    padding: "10px"
+                                }}
+                            >
+                <span
+                    className={`steps-marker ${currentStep === index ? "has-background-warning has-text-dark" : "has-background-primary has-text-white"}`}
+                    style={{
+                        width: "40px",
+                        height: "40px",
+                        fontSize: "18px",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "50%",
+                        fontWeight: "bold"
+                    }}
+                >
+                    {index + 1}
+                </span>
+                                <div
+                                    className="steps-content is-size-6 has-text-weight-bold has-text-white"
+                                    style={{ whiteSpace: "nowrap", marginTop: "5px" }}
                                 >
-              <span
-                  className={`steps-marker ${
-                      currentStep === index
-                          ? "has-background-primary has-text-yellow"
-                          : ""
-                  }`}
-              >
-                {index + 1}
-              </span>
-                                    <div className="steps-content">
-                                        <p className="is-size-6">{step.title}</p>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </nav>
-                </div>
+                                    {step.title}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+
                 {/* Step Content */}
-                <div className="box" style={{background:"transparent"}}>
+                <div className="box has-background-light">
                     <h2 className="subtitle">{steps[currentStep].title}</h2>
                     {steps[currentStep].content}
                 </div>
 
                 {/* Navigation Buttons */}
                 <div className="buttons is-centered">
-                    <button
-                        className="button is-link"
-                        onClick={handlePrevious}
-                        disabled={currentStep === 0}
-                    >
+                    <button className="button is-link is-fullwidth" onClick={handlePrevious} disabled={currentStep === 0}>
                         הקודם
                     </button>
                     <button
-                        className={`button ${isLastStep ? "is-success" : "is-link"}`}
+                        className={`button is-fullwidth ${isLastStep ? "is-success" : "is-link"}`}
                         onClick={isLastStep ? handleFinish : handleNext}
                     >
                         {isLastStep ? "סיום" : "הבא"}
@@ -340,7 +342,7 @@ const SecurityCaseWizard = () => {
                             {maps.map((map, index) => (
                                 <div key={index}>
                                     <p>{map.name}</p>
-                                    {map.image && <img src={map.image} alt={map.name} style={{width: "100%"}}/>}
+                                    {map.image && <img src={map.image} alt={map.name} style={{ width: "100%" }} />}
                                 </div>
                             ))}
                         </div>
@@ -349,6 +351,7 @@ const SecurityCaseWizard = () => {
             </div>
         </div>
     );
+
 };
 
 export default SecurityCaseWizard;

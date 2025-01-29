@@ -28,55 +28,82 @@ const ContactEditor = ({ title, initialData = [], onSave }) => {
     };
 
     return (
-        <div className="contact-editor has-text-centered" style={{ direction: "rtl" }}>
-            <h2 className="title">{title}</h2>
-            <div className="field is-grouped is-justify-content-center">
-                <div className="control">
-                    <input
-                        type="text"
-                        placeholder="שם איש הקשר"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="input"
-                    />
+        <div className="container">
+            <div className="box has-text-centered" style={{ background:"transparent",direction: "rtl" }}>
+                <h2 className="title">{title}</h2>
+
+                {/* Name input */}
+                <div className="field">
+                    <label className="label">שם איש הקשר</label>
+                    <div className="control">
+                        <input
+                            type="text"
+                            className="input"
+                            placeholder="הזן שם"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                    </div>
                 </div>
-                <div className="control">
-                    <input
-                        type="text"
-                        placeholder="מספר טלפון"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="input"
-                    />
+
+                {/* Phone input */}
+                <div className="field">
+                    <label className="label">מספר טלפון</label>
+                    <div className="control">
+                        <input
+                            type="tel"
+                            className="input"
+                            placeholder="הזן מספר טלפון"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                        />
+                    </div>
                 </div>
-                <div className="control">
-                    <input
-                        type="text"
-                        placeholder="תפקיד"
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                        className="input"
-                    />
+
+                {/* Role input */}
+                <div className="field">
+                    <label className="label">תפקיד</label>
+                    <div className="control">
+                        <input
+                            type="text"
+                            className="input"
+                            placeholder="הזן תפקיד"
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                        />
+                    </div>
                 </div>
-                <div className="control">
-                    <button onClick={handleAddContact} className="button is-primary">
-                        הוסף
-                    </button>
+
+                {/* Add contact button */}
+                <div className="field">
+                    <div className="control">
+                        <button
+                            className="button is-primary is-fullwidth"
+                            onClick={handleAddContact}
+                        >
+                            הוסף איש קשר
+                        </button>
+                    </div>
+                </div>
+
+                {/* Contact List */}
+                <div className="field">
+                    <label className="label">רשימת אנשי קשר</label>
+                    <ul className="list">
+                        {contacts.map((contact, index) => (
+                            <li key={index} className="box">
+                                <strong>{contact.name}</strong> ({contact.role}): {contact.phone}
+                                <button
+                                    onClick={() => handleDeleteContact(index)}
+                                    className="button is-small is-danger is-pulled-left"
+                                >
+                                    מחק
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             </div>
-            <ul className="is-flex is-flex-direction-column is-align-items-center">
-                {contacts.map((contact, index) => (
-                    <li key={index} className="box" style={{ maxWidth: "400px", marginBottom: "10px" }}>
-                        <strong>{contact.name}</strong> ({contact.role}): {contact.phone}{" "}
-                        <button
-                            onClick={() => handleDeleteContact(index)}
-                            className="button is-small is-danger"
-                        >
-                            מחק
-                        </button>
-                    </li>
-                ))}
-            </ul>
         </div>
     );
 };

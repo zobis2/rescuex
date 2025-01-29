@@ -23,10 +23,11 @@ const FabricCanvasWithIcons = ({ initialImage, onSave,floorTitle }) => {
     useEffect(() => {
         // Initialize the Fabric.js canvas
         const fabricCanvas = new fabric.Canvas("canvas", {
-            width: 800,
-            height: 600,
-            selection: false, // Disable multi-selection
+            width: window.innerWidth < 768 ? window.innerWidth - 40 : 800, // Responsive width
+            height: window.innerWidth < 768 ? window.innerWidth * 0.75 : 600, // Keep aspect ratio
+            selection: false,
         });
+
         setCanvas(fabricCanvas);
 
         // Load icons from JSON
@@ -183,63 +184,98 @@ const FabricCanvasWithIcons = ({ initialImage, onSave,floorTitle }) => {
         }
     };
     return (
-        <div className='container'>
-            {/* Image upload */}
-            <h2 className="title has-text-centered">{floorTitle}</h2>
+        <div className="container">
+            {/* Floor Title */}
+            <div className="box has-text-centered">
+                <h2 className="title">{floorTitle}</h2>
+            </div>
 
-            {!initialImage&&<div className="field">
-                <label className="label">Upload Image</label>
-                <div className="control">
-                    <input className="input" type="file" accept="image/*" onChange={handleImageUpload}/>
-                </div>
-            </div>}
-
-            {/* Icon selection */}
-            <div className="columns is-multiline is-mobile">
-                {icons.map((icon) => (
-                    <div className="column is-one-quarter" key={icon.name}>
-                        <button className="button is-light" onClick={() => handleIconClick(icon)}>
-                            <img
-                                src={icon.path}
-                                alt={icon.label}
-                                style={{width: "24px", height: "24px"}}
-                            />
-                            <br/>
-                            {icon.label}
-                        </button>
+            {/* Image Upload Section */}
+            {!initialImage && (
+                <div className="box">
+                    <div className="field">
+                        <label className="label">העלה תמונה</label>
+                        <div className="file has-name is-boxed is-fullwidth">
+                            <label className="file-label">
+                                <input className="file-input" type="file" accept="image/*"
+                                       onChange={handleImageUpload}/>
+                                <span className="file-cta">
+                    <span className="file-icon">
+                        <i className="fas fa-upload"></i>
+                    </span>
+                    <span className="file-label">בחר תמונה</span>
+                </span>
+                            </label>
+                        </div>
                     </div>
-                ))}
-            </div>
-            <div>
-                {JSON.stringify(count)}
-            </div>
-            {/* Canvas */}
+                </div>
+
+            )}
+
+            {/* Icon Selection Section */}
             <div className="box">
-
-                <canvas id="canvas" ref={canvasRef} style={{
-                    border: "1px solid black",
-                    width: "100%", // תופס את כל רוחב הקונטיינר
-                    maxWidth: "800px", // מגביל לגודל מקסימלי
-                    height: "400px", // גובה סטנדרטי
-                }}></canvas>
+                <h3 className="subtitle has-text-centered">בחר אייקון</h3>
+                <div className="columns is-multiline is-mobile is-centered">
+                    {icons.map((icon) => (
+                        <div className="column is-one-quarter has-text-centered" key={icon.label}>
+                            <button className="button is-light is-fullwidth" onClick={() => handleIconClick(icon)}>
+                                <figure className="image is-32x32 is-inline-block">
+                                    <img src={icon.path} alt={icon.label}/>
+                                </figure>
+                                <br/>
+                                <span className="is-size-7 has-text-weight-bold">{icon.label}</span>
+                            </button>
+                        </div>
+                    ))}
+                </div>
             </div>
-            <div className="buttons">
 
-                <button className="button is-link is-small" onClick={saveCanvasAsImage}>שמור תמונה</button>
-                <button className="button is-link is-small" onClick={zoomIn}>זום אין</button>
-                <button className="button is-link is-small" onClick={zoomOut}>זום אאוט</button>
-                <button className="button is-link is-small" onClick={() => rotateBackgroundImage(90)}>
-                    סובב
-                </button>
-                <button className="button is-link is-small" onClick={() => rotateBackgroundImage(-90)}>
-                    סובב הפוך
-                </button>
-                <button className="button is-link is-small" onClick={() => addOrientationMarkers()}>
-                    הוספת אורינטציה
-                </button>
+
+            {/* Debugging Icon Count (Can be removed later) */}
+            <div className="notification is-light">{JSON.stringify(count)}</div>
+
+            {/* Canvas Section */}
+            <div className="box has-text-centered">
+                <canvas
+                    id="canvas"
+                    ref={canvasRef}
+
+                ></canvas>
             </div>
+
+            {/* Buttons Section */}
+            <div className="box">
+                <div className="buttons is-centered">
+                    <button className="button is-link is-small" onClick={saveCanvasAsImage}>
+                        <span className="icon"><i className="fas fa-save"></i></span>
+                        <span>שמור תמונה</span>
+                    </button>
+                    <button className="button is-link is-small" onClick={zoomIn}>
+                        <span className="icon"><i className="fas fa-search-plus"></i></span>
+                        <span>זום אין</span>
+                    </button>
+                    <button className="button is-link is-small" onClick={zoomOut}>
+                        <span className="icon"><i className="fas fa-search-minus"></i></span>
+                        <span>זום אאוט</span>
+                    </button>
+                    <button className="button is-link is-small" onClick={() => rotateBackgroundImage(90)}>
+                        <span className="icon"><i className="fas fa-undo"></i></span>
+                        <span>סובב</span>
+                    </button>
+                    <button className="button is-link is-small" onClick={() => rotateBackgroundImage(-90)}>
+                        <span className="icon"><i className="fas fa-redo"></i></span>
+                        <span>סובב הפוך</span>
+                    </button>
+                    <button className="button is-link is-small" onClick={addOrientationMarkers}>
+                        <span className="icon"><i className="fas fa-map-marked-alt"></i></span>
+                        <span>הוסף אוריינטציה</span>
+                    </button>
+                </div>
+            </div>
+
         </div>
     );
+
 };
 
 export default FabricCanvasWithIcons;
